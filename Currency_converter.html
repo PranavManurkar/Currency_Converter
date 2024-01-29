@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body {
+            background-image: url('k.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+
+        }
+
+        .custom-card {
+   
+            background-color: #f4f4f4;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .custom-card label,
+        .custom-card input,
+        .custom-card select,
+        .custom-card button,
+        .custom-card #convertedAmount {
+            width: calc(100% - 20px);
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            display: inline-block;
+        }
+
+        .custom-card select {
+            margin-right: 10px;
+        }
+
+        .custom-card button {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .custom-card button:hover {
+            background-color: #0056b3;
+        }
+        .navbar-custom {
+            background-color: black;
+        }
+
+        .navbar-custom a {
+            color: white;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Currency converter</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="https://cdn-icons-png.flaticon.com/512/7037/7037893.png" alt="Logo" width="40" height="40"
+                class="d-inline-block align-text-bottom">
+            <span class="ml-3 d-flex align-items-center">
+                <p class="text-light bg-dark mb-0 align-bottom " style="font-weight: bold">Currency converter</p>
+            </span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+    <div class="custom-card mx-auto mt-5">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" placeholder="Enter amount" required>
+
+        <label for="fromCurrency">From Currency:</label>
+        <select id="fromCurrency" required>
+          
+        </select>
+
+        <label for="toCurrency">To Currency:</label>
+        <select id="toCurrency" required>
+           
+        </select>
+
+        <button onclick="convertCurrency()">Convert</button>
+        
+        <div id="convertedAmount"></div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+        <script>
+            const convertButton = document.getElementById("convertButton");
+            const convertedAmount = document.getElementById("convertedAmount");
+                    
+        function populateCurrencies(selectElement) {
+            const currencies = ["USD", "EUR", "GBP", "JPY", "CAD","INR"]; 
+
+            currencies.forEach(currency => {
+                const option = document.createElement("option");
+                option.value = currency;
+                option.text = currency;
+                selectElement.appendChild(option);
+            });
+        }
+
+        
+        populateCurrencies(document.getElementById("fromCurrency"));
+        populateCurrencies(document.getElementById("toCurrency"));
+        async function convertCurrency() {
+            const amount = document.getElementById("amount").value;
+            const fromCurrency = document.getElementById("fromCurrency").value;
+            const toCurrency = document.getElementById("toCurrency").value;
+
+            try {
+                const response = await fetch(`https://open.er-api.com/v6/latest/${fromCurrency}`);
+                const data = await response.json();
+                const exchangeRate = data.rates[toCurrency];
+                const convertedAmount = (amount * exchangeRate).toFixed(2);
+
+                document.getElementById("convertedAmount").innerHTML = `Converted Amount: ${convertedAmount} ${toCurrency}`;
+            } catch (error) {
+                console.error("Error fetching exchange rates:", error);
+            }
+        }
+        </script>
+</body>
+</html>
